@@ -1,0 +1,44 @@
+.sf-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: var(--bg-secondary, #f5f7fa);
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+}
+.sf-header a {
+  text-decoration: none;
+  color: inherit;
+}
+.sf-brand {
+  font-weight: 700;
+  margin-right: 16px;
+}
+.sf-nav a {
+  margin-right: 12px;
+  color: #3b82f6;
+}
+.sf-header__right .btn {
+  margin-left: 8px;
+}
+.sf-user {
+  margin-right: 8px;
+  opacity: 0.8;
+}
+
+/* basic buttons */
+.btn {
+  background: #3b82f6;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+.btn-secondary {
+  background: #64748b;
+}
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

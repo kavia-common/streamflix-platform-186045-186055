@@ -1,0 +1,13 @@
+.sf-player {
+  width: 100%;
+}
+.sf-player__video {
+  width: 100%;
+  max-height: 70vh;
+  background: #000;
+  border-radius: 8px;
+}
+.sf-player__title {
+  margin-top: 8px;
+  font-weight: 600;
+}

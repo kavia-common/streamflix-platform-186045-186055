@@ -1,0 +1,19 @@
+.sf-sidebar {
+  width: 260px;
+  padding: 16px;
+  border-right: 1px solid var(--border-color, #e5e7eb);
+  background: var(--bg-primary, #fff);
+}
+.sf-sidebar__section {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+.sf-sidebar__section input, .sf-sidebar__section select {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+@media (max-width: 900px) {
+  .sf-sidebar { display: none; }
+}
