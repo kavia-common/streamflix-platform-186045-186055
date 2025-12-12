@@ -1,4 +1,4 @@
-export type ID = string;
+export type ID = number;
 
 export type User = {
   id: ID;
@@ -8,17 +8,14 @@ export type User = {
 export type Video = {
   id: ID;
   title: string;
-  description?: string | null;
-  posterUrl?: string | null;
+  description: string;
+  tags: string; // comma-separated
   durationSeconds?: number | null;
-  genre?: string | null;
-  year?: number | null;
+  contentType: string;
+  streamUrl: string; // absolute URL returned by backend (proxy-aware if backend trusts proxy headers)
 };
 
 export type HistoryItem = {
-  id: ID;
   video: Video;
-  lastPositionSeconds?: number | null;
-  completed?: boolean | null;
-  updatedAt?: string | null;
+  progressSeconds: number;
 };

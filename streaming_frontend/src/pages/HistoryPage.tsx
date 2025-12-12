@@ -47,15 +47,9 @@ export function HistoryPage() {
       <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((it) => (
           <VideoCard
-            key={it.id}
+            key={it.video.id}
             video={it.video}
-            subtitle={
-              it.completed
-                ? "Completed"
-                : typeof it.lastPositionSeconds === "number"
-                  ? `Last position: ${Math.floor(it.lastPositionSeconds)}s`
-                  : "In progress"
-            }
+            subtitle={`Last position: ${Math.floor(it.progressSeconds)}s`}
             onClick={() => setSelected(it.video)}
           />
         ))}

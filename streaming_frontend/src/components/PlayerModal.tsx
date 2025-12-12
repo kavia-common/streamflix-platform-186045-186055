@@ -11,10 +11,13 @@ type Props = {
 export function PlayerModal({ video, onClose }: Props) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [lastPos, setLastPos] = useState<number>(0);
-  const [completed, setCompleted] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  const streamUrl = useMemo(() => getVideoStreamUrl(video.id), [video.id]);
+  const streamUrl = useMemo(() => {
+    // Prefer backend-provided URL (already includes /videos/{id}/stream and correct host).
+    // Fallback to building from VITE_API_BASE_URL.
+    return video.streamUrl || getVideoStreamUrl(video.id);
+  }, [video.id, video.streamUrl]);
 
   useEffect(() => {
     // Close on ESC
@@ -25,14 +28,13 @@ export function PlayerModal({ video, onClose }: Props) {
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  async function persistHistory(nextCompleted: boolean) {
+  async function persistHistory(progressSeconds: number) {
     // Best-effort: backend may reject if unauthenticated; we don't block the player.
     setSaving(true);
     try {
       await api.upsertHistory({
         videoId: video.id,
-        lastPositionSeconds: Math.floor(lastPos),
-        completed: nextCompleted,
+        progressSeconds,
       });
     } catch {
       // ignore
@@ -57,7 +59,7 @@ export function PlayerModal({ video, onClose }: Props) {
           <div className="min-w-0">
             <div className="truncate text-sm font-bold text-slate-900 dark:text-white">{video.title}</div>
             <div className="truncate text-xs text-slate-600 dark:text-slate-300">
-              {saving ? "Saving progress…" : completed ? "Completed" : "Watching"}
+              {saving ? "Saving progress…" : "Watching"}
             </div>
           </div>
 
@@ -66,7 +68,7 @@ export function PlayerModal({ video, onClose }: Props) {
               type="button"
               className="sf-button-secondary"
               onClick={async () => {
-                await persistHistory(completed);
+                await persistHistory(Math.floor(lastPos));
                 onClose();
               }}
             >
@@ -89,8 +91,12 @@ export function PlayerModal({ video, onClose }: Props) {
               setLastPos(el.currentTime || 0);
             }}
             onEnded={async () => {
-              setCompleted(true);
-              await persistHistory(true);
+              // Mark completion as "end of video" by setting progress to duration if known,
+              // otherwise keep current position.
+              const fallback = Math.floor(lastPos);
+              const duration = typeof videoRef.current?.duration === "number" ? videoRef.current?.duration : undefined;
+              const progress = duration && Number.isFinite(duration) ? Math.floor(duration) : fallback;
+              await persistHistory(progress);
             }}
           />
         </div>

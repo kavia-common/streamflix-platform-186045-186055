@@ -16,7 +16,7 @@ function useDebounced<T>(value: T, delayMs: number): T {
 
 // PUBLIC_INTERFACE
 export function BrowsePage() {
-  const [filters, setFilters] = useState<BrowseFilters>({ q: "", genre: "" });
+  const [filters, setFilters] = useState<BrowseFilters>({ q: "", tag: "" });
   const debounced = useDebounced(filters, 250);
 
   const [videos, setVideos] = useState<Video[]>([]);
@@ -31,7 +31,7 @@ export function BrowsePage() {
       setLoading(true);
       setError(null);
       try {
-        const res = await api.listVideos({ q: debounced.q, genre: debounced.genre });
+        const res = await api.listVideos({ q: debounced.q, tag: debounced.tag });
         setVideos(res);
       } catch (e) {
         setError(e instanceof Error ? e.message : "Failed to load videos");
@@ -39,7 +39,7 @@ export function BrowsePage() {
         setLoading(false);
       }
     })();
-  }, [debounced.genre, debounced.q]);
+  }, [debounced.q, debounced.tag]);
 
   return (
     <div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 px-4 py-6 md:grid-cols-[18rem_1fr]">
@@ -61,15 +61,13 @@ export function BrowsePage() {
           </div>
         </div>
 
-        {error ? (
-          <div className="sf-card p-4 text-sm text-red-600 dark:text-red-400">{error}</div>
-        ) : null}
+        {error ? <div className="sf-card p-4 text-sm text-red-600 dark:text-red-400">{error}</div> : null}
 
         {emptyState ? (
           <div className="sf-card p-8 text-center">
             <div className="text-sm font-semibold text-slate-900 dark:text-white">No videos found</div>
             <div className="mt-1 text-xs text-slate-600 dark:text-slate-300">
-              Try adjusting your search or genre filter.
+              Try adjusting your search or tag filter.
             </div>
           </div>
         ) : (
